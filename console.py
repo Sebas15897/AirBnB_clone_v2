@@ -11,6 +11,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place, 'State': State, 'City': City, 
+            'Amenity': Amenity, 'Review': Review}
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -18,11 +20,7 @@ class HBNBCommand(cmd.Cmd):
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
-    classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+    
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -37,7 +35,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -113,18 +110,35 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
+    def do_create(self, arg):
         """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+        args = arg.split(" ")
+        if args
+            className = args[0]
+        else:
+            raise SyntaxError()
+        
+        kwargs = {}
+
+        for i in args[1:]:
+            a, b = i.split("=")
+            if self.is_int(b):
+                kwargs[a] = int(b)
+            elif self.is_float(b):
+                kwargs[a] = float(b)
+            else:
+                b 0 b.replace('_', ' ')
+                kwargs[a] = b.strip('"\'')
+
+        obj = self.all.classes[className](**kwargs)
+        storage.new(obj)    #Storage the new object
+        obj.save()  #Save storage to file
+        print(obj.id)   #Print id of created object class
+
+        except SyntaxError:
+            print(" ** class name missing ** ")
+        except KeyError:
+             print(" ** class doesn't exist ** ")
 
     def help_create(self):
         """ Help information for the create method """
