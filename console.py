@@ -61,7 +61,7 @@ class HBNBCommand(cmd.Cmd):
                     v = v.replace('_', ' ')
                     kwargs[a] = v.strip('"\'')
 
-            obj = self.all_classes[className](**kwargs)
+            obj = self.classes[className](**kwargs)
             storage.new(obj)
             obj.save()
             print(obj.id)
@@ -289,3 +289,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
+    
