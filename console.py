@@ -34,32 +34,34 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, arg):
-        """ Create an object of any class"""
-
+        """Creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
+        """
         try:
             if not arg:
                 raise SyntaxError()
-
             args = arg.split(" ")
 
             if args:
                 className = args[0]
             else:
                 raise SyntaxError()
-            
+
             kwargs = {}
 
             for i in args[1:]:
-                a, b = i.split("=")
-                if self.is_int(b):
-                    kwargs[a] = int(b)
-                elif self.is_float(b):
-                    kwargs[a] = float(b)
+                a, v = i.split("=")
+                if self.is_int(v):
+                    kwargs[a] = int(v)
+                elif self.is_float(v):
+                    kwargs[a] = float(v)
                 else:
-                    b = b.replace('_', ' ')
-                    kwargs[a] = b.strip('"\'')
+                    v = v.replace('_', ' ')
+                    kwargs[a] = v.strip('"\'')
 
-            obj = self.classes[className](**kwargs)
+            obj = self.all_classes[className](**kwargs)
             storage.new(obj)
             obj.save()
             print(obj.id)
