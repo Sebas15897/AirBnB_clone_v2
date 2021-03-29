@@ -17,7 +17,7 @@ class HBNBCommand(cmd.Cmd):
     """this class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    all_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+    classes = {"BaseModel": BaseModel, "User": User, "State": State,
                    "City": City, "Amenity": Amenity,
                    "Place": Place, "Review": Review}
 
@@ -81,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -112,7 +112,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -147,7 +147,7 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             args = line.split(" ")
-            if args[0] not in self.all_classes:
+            if args[0] not in self.classes:
                 raise NameError()
             for key in objects:
                 name = key.split('.')
@@ -171,7 +171,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = split(line, " ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -208,7 +208,7 @@ class HBNBCommand(cmd.Cmd):
         counter = 0
         try:
             my_list = split(line, " ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             objects = storage.all()
             for key in objects:
