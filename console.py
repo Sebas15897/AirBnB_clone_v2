@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
-import sys
 from models import storage
 from datetime import datetime
 from models.base_model import BaseModel
-from models.__init__ import storage
 from models.user import User
 from models.state import State
 from models.city import City
@@ -121,34 +119,34 @@ class HBNBCommand(cmd.Cmd):
             if not arg:
                 raise SyntaxError()
 
-        args = arg.split(" ")
+            args = arg.split(" ")
 
-        if args:
-            className = args[0]
-        else:
-            raise SyntaxError()
-        
-        kwargs = {}
-
-        for i in args[1:]:
-            a, b = i.split("=")
-            if self.is_int(b):
-                kwargs[a] = int(b)
-            elif self.is_float(b):
-                kwargs[a] = float(b)
+            if args:
+                className = args[0]
             else:
-                b 0 b.replace('_', ' ')
-                kwargs[a] = b.strip('"\'')
+                raise SyntaxError()
+            
+            kwargs = {}
 
-        obj = self.classes[className](**kwargs)
-        storage.new(obj)    #Storage the new object
-        obj.save()  #Save storage to file
-        print(obj.id)   #Print id of created object class
+            for i in args[1:]:
+                a, b = i.split("=")
+                if self.is_int(b):
+                    kwargs[a] = int(b)
+                elif self.is_float(b):
+                    kwargs[a] = float(b)
+                else:
+                    b = b.replace('_', ' ')
+                    kwargs[a] = b.strip('"\'')
+
+            obj = self.classes[className](**kwargs)
+            storage.new(obj)
+            obj.save()
+            print(obj.id)
 
         except SyntaxError:
             print(" ** class name missing ** ")
         except KeyError:
-             print(" ** class doesn't exist ** ")
+            print(" ** class doesn't exist ** ")
 
     def help_create(self):
         """ Help information for the create method """
