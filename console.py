@@ -17,7 +17,7 @@ class HBNBCommand(cmd.Cmd):
     """this class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    classes = {"BaseModel": BaseModel, "User": User, "State": State,
+    all_classes = {"BaseModel": BaseModel, "User": User, "State": State,
                    "City": City, "Amenity": Amenity,
                    "Place": Place, "Review": Review}
 
@@ -33,43 +33,43 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program at end of file"""
         return True
 
-    def do_create(self, arg):
+    def do_create(self, line):
         """Creates a new instance of BaseModel, saves it
         Exceptions:
             SyntaxError: when there is no args given
             NameError: when there is no object taht has the name
         """
         try:
-            if not arg:
+            if not line:
                 raise SyntaxError()
-            args = arg.split(" ")
+            my_list = line.split(" ")  # split cmd line into list
 
-            if args:
-                className = args[0]
-            else:
+            if my_list:  # if list not empty
+                cls_name = my_list[0]  # extract class name
+            else:  # class name missing
                 raise SyntaxError()
 
             kwargs = {}
 
-            for i in args[1:]:
-                a, v = i.split("=")
+            for pair in my_list[1:]:
+                k, v = pair.split("=")
                 if self.is_int(v):
-                    kwargs[a] = int(v)
+                    kwargs[k] = int(v)
                 elif self.is_float(v):
-                    kwargs[a] = float(v)
+                    kwargs[k] = float(v)
                 else:
                     v = v.replace('_', ' ')
-                    kwargs[a] = v.strip('"\'')
+                    kwargs[k] = v.strip('"\'')
 
-            obj = self.classes[className](**kwargs)
-            storage.new(obj)
-            obj.save()
-            print(obj.id)
+            obj = self.all_classes[cls_name](**kwargs)
+            storage.new(obj)  # store new object
+            obj.save()  # save storage to file
+            print(obj.id)  # print id of created object class
 
         except SyntaxError:
-            print(" ** class name missing ** ")
+            print("** class name missing **")
         except KeyError:
-            print(" ** class doesn't exist ** ")
+            print("** class doesn't exist **")
 
     def do_show(self, line):
         """Prints the string representation of an instance
@@ -83,7 +83,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.classes:
+            if my_list[0] not in self.all_classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -114,7 +114,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.classes:
+            if my_list[0] not in self.all_classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -149,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             args = line.split(" ")
-            if args[0] not in self.classes:
+            if args[0] not in self.all_classes:
                 raise NameError()
             for key in objects:
                 name = key.split('.')
@@ -173,7 +173,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = split(line, " ")
-            if my_list[0] not in self.classes:
+            if my_list[0] not in self.all_classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -210,7 +210,7 @@ class HBNBCommand(cmd.Cmd):
         counter = 0
         try:
             my_list = split(line, " ")
-            if my_list[0] not in self.classes:
+            if my_list[0] not in self.all_classes:
                 raise NameError()
             objects = storage.all()
             for key in objects:
@@ -289,4 +289,3 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
-    
