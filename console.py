@@ -2,14 +2,18 @@
 """ Console Module """
 import cmd
 import sys
+from models import storage
+from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
-from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
+from models.place import Place
 from models.review import Review
+from shlex import split
+
 
 classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place, 'State': State, 'City': City, 
             'Amenity': Amenity, 'Review': Review}
@@ -112,8 +116,14 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """ Create an object of any class"""
+
+        try:
+            if not arg:
+                raise SyntaxError()
+
         args = arg.split(" ")
-        if args
+
+        if args:
             className = args[0]
         else:
             raise SyntaxError()
@@ -130,7 +140,7 @@ class HBNBCommand(cmd.Cmd):
                 b 0 b.replace('_', ' ')
                 kwargs[a] = b.strip('"\'')
 
-        obj = self.all.classes[className](**kwargs)
+        obj = self.classes[className](**kwargs)
         storage.new(obj)    #Storage the new object
         obj.save()  #Save storage to file
         print(obj.id)   #Print id of created object class
