@@ -1,10 +1,27 @@
 #!/usr/bin/python3
-"""test for amenity"""
-import unittest
-import os
+""" """
+from tests.test_models.test_base_model import test_basemodel
 from models.amenity import Amenity
+import unittest
 from models.base_model import BaseModel
-import pep8
+import os
+type_storage = os.getenv('HBNB_TYPE_STORAGE')
+
+
+class test_Amenity(test_basemodel):
+    """ """
+
+    def __init__(self, *args, **kwargs):
+        """ """
+        super().__init__(*args, **kwargs)
+        self.name = "Amenity"
+        self.value = Amenity
+
+    @unittest.skipIf(type_storage == 'db', "No apply for db")
+    def test_name2(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.name), str)
 
 
 class TestAmenity(unittest.TestCase):
@@ -28,16 +45,6 @@ class TestAmenity(unittest.TestCase):
         except Exception:
             pass
 
-    def test_pep8_Amenity(self):
-        """Tests pep8 style"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/amenity.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
-
-    def test_checking_for_docstring_Amenity(self):
-        """checking for docstrings"""
-        self.assertIsNotNone(Amenity.__doc__)
-
     def test_attributes_Amenity(self):
         """chekcing if amenity have attibutes"""
         self.assertTrue('id' in self.amenity.__dict__)
@@ -53,6 +60,7 @@ class TestAmenity(unittest.TestCase):
         """test attribute type for Amenity"""
         self.assertEqual(type(self.amenity.name), str)
 
+    @unittest.skipIf(type_storage == 'db', "test not possible")
     def test_save_Amenity(self):
         """test if the save works"""
         self.amenity.save()
@@ -62,6 +70,38 @@ class TestAmenity(unittest.TestCase):
         """test if dictionary works"""
         self.assertEqual('to_dict' in dir(self.amenity), True)
 
+class TestAmenity(unittest.TestCase):
+    """ a class for testing Amenity"""
 
-if __name__ == "__main__":
-    unittest.main()
+    @classmethod
+    def setUpClass(cls):
+        """ Example Data """
+        cls.amen = Amenity()
+        cls.amen.name = "Wifi"
+
+    def teardown(cls):
+        """ tear down Class """
+        del cls.amen
+
+    def tearDown(self):
+        try:
+            os.remove('file.json')
+        except FileNotFoundError:
+            pass
+
+    def test_Amenity_attribute_types(self):
+        """ test Amenity attribute types """
+        self.assertEqual(type(self.amen.name), str)
+
+    def test_Amenity_is_subclass(self):
+        """ test if Amenity is subclass of BaseModel """
+        self.assertTrue(issubclass(self.amen.__class__, BaseModel), True)
+
+    def test_Amenity_save(self):
+        """ test save() command """
+        self.amen.save()
+        self.assertNotEqual(self.amen.created_at, self.amen.updated_at)
+
+    def test_Amenity_sa_instance_state(self):
+        """ test is _sa_instance_state has been removed """
+        self.assertNotIn('_sa_instance_state', self.amen.to_dict())
