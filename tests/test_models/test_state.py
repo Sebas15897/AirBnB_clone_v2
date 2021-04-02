@@ -1,69 +1,64 @@
 #!/usr/bin/python3
-"""test for state"""
+""" """
+from tests.test_models.test_base_model import test_basemodel
+from models.state import State
 import unittest
 import os
-from models.state import State
 from models.base_model import BaseModel
-import pep8
+
+type_storage = os.getenv('HBNB_TYPE_STORAGE')
+
+
+class test_state(test_basemodel):
+    """ """
+
+    def __init__(self, *args, **kwargs):
+        """ """
+        super().__init__(*args, **kwargs)
+        self.name = "State"
+        self.value = State
+
+    @unittest.skipIf(type_storage == 'db', "No apply for db")
+    def test_name3(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.name), str)
 
 
 class TestState(unittest.TestCase):
-    """this will test the State class"""
 
     @classmethod
     def setUpClass(cls):
-        """set up for test"""
-        cls.state = State()
-        cls.state.name = "CA"
+        cls.state1 = State()
+        cls.state1.name = "CA_the_golden_state"
 
     @classmethod
-    def teardown(cls):
-        """at the end of the test this will tear it down"""
-        del cls.state
-
-    def tearDown(self):
-        """teardown"""
+    def tearDownClass(cls):
+        del cls.state1
         try:
             os.remove("file.json")
-        except Exception:
+        except FileNotFoundError:
             pass
 
-    def test_pep8_Review(self):
-        """Tests pep8 style"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/state.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
+    def test_is_subclass(self):
+        self.assertTrue(issubclass(self.state1.__class__, BaseModel), True)
 
-    def test_checking_for_docstring_State(self):
-        """checking for docstrings"""
+    def test_checking_for_functions(self):
         self.assertIsNotNone(State.__doc__)
 
-    def test_attributes_State(self):
-        """chekcing if State have attributes"""
-        self.assertTrue('id' in self.state.__dict__)
-        self.assertTrue('created_at' in self.state.__dict__)
-        self.assertTrue('updated_at' in self.state.__dict__)
-        self.assertTrue('name' in self.state.__dict__)
+    def test_has_attributes(self):
+        self.assertTrue('id' in self.state1.__dict__)
+        self.assertTrue('created_at' in self.state1.__dict__)
+        self.assertTrue('updated_at' in self.state1.__dict__)
+        self.assertTrue('name' in self.state1.__dict__)
 
-    def test_is_subclass_State(self):
-        """test if State is subclass of BaseModel"""
-        self.assertTrue(issubclass(self.state.__class__, BaseModel), True)
+    def test_attributes_are_strings(self):
+        self.assertEqual(type(self.state1.name), str)
 
-    def test_attribute_types_State(self):
-        """test attribute type for State"""
-        self.assertEqual(type(self.state.name), str)
+    @unittest.skipIf(type_storage == 'db', "not for db")
+    def test_save(self):
+        self.state1.save()
+        self.assertNotEqual(self.state1.created_at, self.state1.updated_at)
 
-    @unittest.skipIf(os.environ['HBNB_TYPE_STORAGE'] == 'db',
-                     'Invalid storage mode')
-    def test_save_State(self):
-        """test if the save works"""
-        self.state.save()
-        self.assertNotEqual(self.state.created_at, self.state.updated_at)
-
-    def test_to_dict_State(self):
-        """test if dictionary works"""
-        self.assertEqual('to_dict' in dir(self.state), True)
-
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_to_dict(self):
+        self.assertEqual('to_dict' in dir(self.state1), True)
